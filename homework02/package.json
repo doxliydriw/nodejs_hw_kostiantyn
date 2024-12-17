@@ -1,0 +1,16 @@
+{
+  "name": "homework02",
+  "version": "1.0.0",
+  "description": "homework",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "test": "node main.js"
+  },
+  "author": "Demidas Kostiantyn",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.4.7"
+  }
+}
