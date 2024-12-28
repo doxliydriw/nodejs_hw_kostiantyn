@@ -128,3 +128,5 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+lesson03/data/
+lesson04-express-sqlite/db/database.db
