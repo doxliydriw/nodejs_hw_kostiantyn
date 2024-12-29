@@ -1,7 +1,7 @@
 import { MongoClient, ObjectId } from 'mongodb';
+import config from "config";
 
-const uri =
-    'mongodb+srv://demcleany:tayTFurGjkJUuWq6@cluster0.3zzd8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const uri = config.get( 'database.url' );
 const client = new MongoClient( uri );
 
 // Define interfaces for User and Post
