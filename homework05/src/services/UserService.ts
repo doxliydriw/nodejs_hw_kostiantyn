@@ -30,6 +30,20 @@ export class UserService
         return this.db.collection( "users" ).findOne( { _id: new ObjectId( id ) } );
     }
 
+    // Method to get a user by email
+    async getUserByEmail ( email: string )
+    {
+        try {
+            const user = await this.db.collection( "users" ).findOne( { email } );
+            console.log( `User fetched with email ${email}:`, user ); // Debug log
+            return user;
+        } catch ( error ) {
+            console.error( `Error fetching user by email ${email}:`, error );
+            throw new Error( "Unable to fetch user by email" );
+        }
+    }
+
+
     // Method to create a new user
     async createUser ( data: { name: string; email: string; age: number; } )
     {

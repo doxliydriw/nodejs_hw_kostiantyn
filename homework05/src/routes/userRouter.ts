@@ -1,20 +1,38 @@
 import { Router, Request, Response } from "express";
 import { userService } from "../services/UserService";
 import { postService } from "../services/PostService";
+import { body, validationResult } from "express-validator";
 
 const userRouter = Router();
 
 // *** CREATE: Add a new user ***
-userRouter.post( "/", async ( req: Request, res: Response ) =>
-{
-    const { name, email, age } = req.body;
-    try {
-        const user = await userService.createUser( { name, email, age } );
-        res.status( 201 ).json( user );
-    } catch ( err ) {
-        res.status( 500 ).json( { error: err.message } );
-    }
-} );
+userRouter.post( "/",
+    [
+        body( "name" )
+            .isString()
+            .isLength( { min: 2, max: 30 } )
+            .withMessage( "Name must be between 2 and 30 characters" ),
+        body( "email" ).isEmail().withMessage( "Email must be a valid email address" ),
+        body( "age" )
+            .isNumeric()
+            .withMessage( "Age must be a number" ),
+    ],
+    async ( req: Request, res: Response ) =>
+    {
+        const result = validationResult( req );
+        if ( !result.isEmpty() ) {
+            res.send( { errors: result.array() } );
+            return;
+        }
+
+        const { name, email, age } = req.body;
+        try {
+            const user = await userService.createUser( { name, email, age } );
+            res.status( 201 ).json( user );
+        } catch ( err ) {
+            res.status( 500 ).json( { error: err.message } );
+        }
+    } );
 
 // *** READ: Get users with age > 49 ***
 userRouter.get( "/old-users", async ( req: Request, res: Response ) =>
