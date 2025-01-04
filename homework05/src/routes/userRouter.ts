@@ -66,33 +66,57 @@ userRouter.get( "/", async ( req: Request, res: Response ) =>
 } );
 
 // *** READ: Get a user by ID ***
-userRouter.get( "/:id", async ( req: Request, res: Response ) =>
-{
-    const { id } = req.params;
-    try {
-        const user = await userService.getUserById( id );
-        if ( !user ) {
-            res.status( 404 ).json( { error: "User not found" } );
-            return;
+userRouter.get( "/:id",
+    async ( req: Request, res: Response ) =>
+    {
+        const { id } = req.params;
+        try {
+            const user = await userService.getUserById( id );
+            if ( !user ) {
+                res.status( 404 ).json( { error: "User not found" } );
+                return;
+            }
+            res.json( user );
+        } catch ( err ) {
+            res.status( 500 ).json( { error: err.message } );
         }
-        res.json( user );
-    } catch ( err ) {
-        res.status( 500 ).json( { error: err.message } );
-    }
-} );
+    } );
 
 // *** UPDATE: Update a user by ID ***
-userRouter.put( "/:id", async ( req: Request, res: Response ) =>
-{
-    const { id } = req.params;
-    const { name, email, age } = req.body;
-    try {
-        const user = await userService.updateUser( id, { name, email, age } );
-        res.json( user );
-    } catch ( err ) {
-        res.status( 500 ).json( { error: err.message } );
+userRouter.put(
+    "/:id",
+    [
+        body( "name" )
+            .optional()
+            .isString()
+            .isLength( { min: 2, max: 30 } )
+            .withMessage( "Name must be between 2 and 30 characters" ),
+        body( "email" ).optional().isEmail().withMessage( "Email must be a valid email address" ),
+        body( "age" ).optional().isNumeric().withMessage( "Age must be a number" ),
+    ],
+    async ( req: Request, res: Response ) =>
+    {
+        // Check for validation errors
+        const errors = validationResult( req );
+        if ( !errors.isEmpty() ) {
+            return res.status( 400 ).json( { errors: errors.array() } );
+        }
+
+        const { id } = req.params;
+        const { name, email, age } = req.body;
+
+        try {
+            const user = await userService.updateUser( id, { name, email, age } );
+            if ( !user ) {
+                return res.status( 404 ).json( { error: "User not found" } );
+            }
+            res.json( user );
+        } catch ( err: any ) {
+            console.error( `Error updating user with ID ${id}:`, err.message );
+            res.status( 500 ).json( { error: "Internal Server Error" } );
+        }
     }
-} );
+);
 
 // *** DELETE: Delete a user by ID ***
 userRouter.delete( "/:id", async ( req: Request, res: Response ) =>
