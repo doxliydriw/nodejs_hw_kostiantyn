@@ -1,0 +1,15 @@
+---
+app:
+  port: APP_PORT
+  hostname: APP_HOSTNAME
+
+database:
+  url: DATABASE_URL
+#   schema: DATABASE_SCHEMA
+#   url_secret: DATABASE_URL_SECRET
+
+# service1:
+#   url: SERVICE1_URL
+
+# service2:
+#   url: SERVICE2_URL
