@@ -117,7 +117,7 @@ postRouter.get( "/", async ( req: Request, res: Response ) =>
 } );
 
 // Get all posts for a specific user
-postRouter.get( "/user/:user_id", async ( req: Request, res: Response ) =>
+postRouter.get( "/user/:user_id/posts", async ( req: Request, res: Response ) =>
 {
     const { user_id } = req.params;
     try {
