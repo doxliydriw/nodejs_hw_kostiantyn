@@ -1,20 +1,30 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Relation, Index, JoinColumn } from "typeorm"
-import { User } from "../../users/entities/User"
-import { Post } from "../../posts/entities/Posts"
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  Relation,
+  JoinColumn,
+} from 'typeorm';
+import { User } from '../../users/entities/User';
+import { Post } from '../../posts/entities/Posts';
 
-@Entity("comments")
+@Entity('comments')
 export class Comment {
-    @PrimaryGeneratedColumn("increment")
-    id: number;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-    @Column("text")
-    content: string;
+  @Column('text')
+  content: string;
 
-    @ManyToOne(() => User, (user) => user.comments, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "user_id" })
-    author: Relation<User>;
+  @ManyToOne(() => User, (user) => user.comments, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'author_id' })
+  author: User;
 
-    @ManyToOne(() => Post, (post) => post.comments, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "post_id" })
-    post: Relation<Post>;
+  @ManyToOne(() => Post, (post) => post.comments, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'post_id' })
+  post: Relation<Post>;
 }

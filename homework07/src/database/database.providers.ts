@@ -1,9 +1,9 @@
 import { DataSource } from 'typeorm';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const url =
+  process.env['NODE_ENV'] == 'test'
+    ? process.env['TEST_DATABASE_URL']
+    : process.env['DATABASE_URL'];
 
 export const databaseProviders = [
   {
@@ -12,11 +12,9 @@ export const databaseProviders = [
       const dataSource = new DataSource({
         type: 'postgres',
         port: 5432,
-        url: process.env['DATABASE_URL'],
-        entities: [
-          path.join(__dirname, '/../**/entities/*{.ts,.js}'), // Dynamically include entity files
-        ],
-        synchronize: true, // update false in production
+        url,
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        synchronize: true,
       });
 
       return dataSource.initialize();

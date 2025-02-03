@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './entities/Posts';
@@ -11,22 +15,34 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   // Create a new POST
   async createPost(data: CreatePostDto): Promise<Post> {
     try {
-      const post = this.postRepository.create(data);
+      const user = await this.userRepository.findOneBy({ id: data.author });
+      if (!user) {
+        throw new BadRequestException('Author not found');
+      }
+      const post = this.postRepository.create({ ...data, author: user });
       return await this.postRepository.save(post);
-    } catch (error) {
-      throw new BadRequestException('Unable to create post', error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new BadRequestException(
+          `Unable to create post: ${error.message}`,
+        );
+      }
+      throw new BadRequestException('Unable to create post');
     }
   }
 
   // Get Post by ID
-  async getPostById(id: string): Promise<Post> {
+  async getPostById(id: number): Promise<Post> {
     const post = await this.postRepository.findOne({
-      where: { id: parseInt(id, 10) },
+      where: { id },
       relations: ['author'],
     });
     if (!post) {
@@ -36,8 +52,8 @@ export class PostService {
   }
 
   // Edit an existing POST
-  async editPost(id: string, data: UpdatePostDto): Promise<Post> {
-    const post = await this.getPostById(id); // Reuse `getPostById` for consistency
+  async editPost(id: number, data: UpdatePostDto): Promise<Post> {
+    const post = await this.getPostById(id);
     if (data.title) {
       post.title = data.title;
     }
