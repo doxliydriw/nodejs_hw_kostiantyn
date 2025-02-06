@@ -13,7 +13,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: false,
+      whitelist: true, // Removes extra fields not defined in DTO
+      forbidNonWhitelisted: true, // Throws error if extra fields are sent
+      transform: true, // Converts types automatically
     }),
   );
   await app.listen(process.env.PORT ?? 3000);

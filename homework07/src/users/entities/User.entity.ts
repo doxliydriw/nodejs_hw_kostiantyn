@@ -23,6 +23,9 @@ export class User {
   @Column('integer')
   age: number;
 
+  @Column('text')
+  password: string;
+
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];
 
