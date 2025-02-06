@@ -16,6 +16,12 @@ services:
       - type: bind
         source: ./src
         target: /home/node/app/src
+      - type: bind
+        source: ./views
+        target: /home/node/app/views
+      - type: bind
+        source: ./public
+        target: /home/node/app/public
     command: npm run start:dev
 
   db:

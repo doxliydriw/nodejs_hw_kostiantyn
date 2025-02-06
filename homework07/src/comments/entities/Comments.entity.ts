@@ -6,8 +6,8 @@ import {
   Relation,
   JoinColumn,
 } from 'typeorm';
-import { User } from '../../users/entities/User';
-import { Post } from '../../posts/entities/Posts';
+import { User } from '../../users/entities/User.entity';
+import { Post } from '../../posts/entities/Posts.entity';
 
 @Entity('comments')
 export class Comment {

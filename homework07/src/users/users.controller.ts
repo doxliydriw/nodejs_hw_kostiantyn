@@ -2,136 +2,44 @@ import {
   Controller,
   Get,
   Post,
-  Put,
-  Delete,
   Body,
+  Patch,
   Param,
-  Query,
-  HttpException,
-  HttpStatus,
-  Logger,
+  Delete,
 } from '@nestjs/common';
-import { UserService } from './users.service';
-import { PostService } from '../posts/posts.service';
+import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-@Controller('users')
-export class UserController {
-  private readonly logger = new Logger(UserController.name); // ✅ Logger instance
-
+@Controller('api/v1/users')
+export class UsersController {
   constructor(
-    private readonly userService: UserService,
-    private readonly postService: PostService,
+    private readonly usersService: UsersService,
   ) {}
 
-  // *** CREATE: Add a new user ***
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    try {
-      return await this.userService.createUser(createUserDto);
-    } catch (err: unknown) {
-      this.logger.error('Error creating user', err); // ✅ Log error
-      throw new HttpException(
-        err instanceof Error ? err.message : 'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  create(@Body() createUserDto: CreateUserDto) {
+    // console.log('createUserDto', createUserDto);
+    return this.usersService.create(createUserDto);
   }
 
-  // *** READ: Get users with age > 49 ***
-  @Get('old-users')
-  async getOldUsers() {
-    try {
-      const filter = { age: { $gt: 49 } };
-      return await this.userService.getAllUsers(filter);
-    } catch (err: unknown) {
-      this.logger.error('Error fetching old users', err);
-      throw new HttpException(
-        err instanceof Error ? err.message : 'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  // *** READ: Get all users ***
   @Get()
-  async getAllUsers(@Query() query: Record<string, any>) {
-    try {
-      return await this.userService.getAllUsers(query);
-    } catch (err: unknown) {
-      this.logger.error('Error fetching all users', err);
-      throw new HttpException(
-        err instanceof Error ? err.message : 'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  findAll() {
+    return this.usersService.findAll();
   }
 
-  // *** READ: Get a user by ID ***
   @Get(':id')
-  async getUserById(@Param('id') id: string) {
-    try {
-      const user = await this.userService.getUserById(id);
-      if (!user) {
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-      }
-      return user;
-    } catch (err: unknown) {
-      this.logger.error(`Error fetching user with ID ${id}`, err);
-      throw new HttpException(
-        err instanceof Error ? err.message : 'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(+id);
   }
 
-  // *** UPDATE: Update a user by ID ***
-  @Put(':id')
-  async updateUser(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
-    try {
-      const user = await this.userService.updateUser(id, updateUserDto);
-      if (!user) {
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-      }
-      return user;
-    } catch (err: unknown) {
-      this.logger.error(`Error updating user with ID ${id}`, err);
-      throw new HttpException(
-        err instanceof Error ? err.message : 'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(+id, updateUserDto);
   }
 
-  // *** DELETE: Delete a user by ID ***
   @Delete(':id')
-  async deleteUser(@Param('id') id: string) {
-    try {
-      return await this.userService.deleteUser(id);
-    } catch (err: unknown) {
-      this.logger.error(`Error deleting user with ID ${id}`, err);
-      throw new HttpException(
-        err instanceof Error ? err.message : 'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  // *** READ: Get all posts for a specific user ***
-  @Get(':user_id/posts')
-  async getPostsByUserId(@Param('user_id') userId: string) {
-    try {
-      return await this.postService.getPostsByUserId(userId);
-    } catch (err: unknown) {
-      this.logger.error(`Error fetching posts for user ID ${userId}`, err);
-      throw new HttpException(
-        err instanceof Error ? err.message : 'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(+id);
   }
 }

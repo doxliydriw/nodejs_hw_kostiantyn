@@ -15,16 +15,16 @@ import {
 } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
 import { PostService } from './posts.service';
-import { Post as PostEntity } from './entities/Posts';
+import { Post as PostEntity } from './entities/Posts.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 
 @Controller('posts')
-@UseInterceptors(ClassSerializerInterceptor) // ✅ Automatically formats responses
+@UseInterceptors(ClassSerializerInterceptor) //  Automatically formats responses
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  // ✅ Create a new POST
+  //  Create a new POST
   @Post()
   async createPost(@Body() createPostDto: CreatePostDto): Promise<PostEntity> {
     try {
@@ -39,7 +39,7 @@ export class PostController {
     }
   }
 
-  // ✅ Get Post by ID (Handles errors properly)
+  //  Get Post by ID (Handles errors properly)
   @Get(':id')
   async getPostById(
     @Param('id', ParseIntPipe) id: number,
@@ -51,7 +51,7 @@ export class PostController {
     return post;
   }
 
-  // ✅ Edit an existing POST (Handles not found error correctly)
+  //  Edit an existing POST (Handles not found error correctly)
   @Put(':id')
   async editPost(
     @Param('id', ParseIntPipe) id: number,
@@ -71,7 +71,7 @@ export class PostController {
     }
   }
 
-  // ✅ Delete a POST
+  //  Delete a POST
   @Delete(':id')
   async deletePost(
     @Param('id', ParseIntPipe) id: number,
@@ -89,13 +89,13 @@ export class PostController {
     }
   }
 
-  // ✅ Get All Posts (Uses DTO for cleaner responses)
+  //  Get All Posts (Uses DTO for cleaner responses)
   @Get()
   async getAllPosts(): Promise<PostEntity[]> {
     return await this.postService.getAllPosts();
   }
 
-  // ✅ Get All Posts by User ID (Handles invalid IDs correctly)
+  //  Get All Posts by User ID (Handles invalid IDs correctly)
   @Get('user/:userId')
   async getPostsByUserId(
     @Param('userId', ParseIntPipe) userId: number,

@@ -8,8 +8,8 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { User } from '../../users/entities/User';
-import { Comment } from '../../comments/entities/Comments';
+import { User } from '../../users/entities/User.entity';
+import { Comment } from '../../comments/entities/Comments.entity';
 
 @Entity('post')
 export class Post {

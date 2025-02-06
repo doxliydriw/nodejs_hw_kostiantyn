@@ -1,0 +1,27 @@
+extends layout
+
+block content
+    h1=title
+    p=message
+      form(action="/register" method="POST")
+        // ✅ Name Field
+        label(for="name") Name:
+        input#name(type="text" name="name" required placeholder="Enter your name")
+
+        // ✅ Email Field
+        label(for="email") Email:
+        input#email(type="email" name="email" required placeholder="Enter your email")
+
+        // ✅ Age Field
+        label(for="age") Age:
+        input#age(type="number" name="age" required min="1" placeholder="Enter your age")
+
+        // ✅ Password Field
+        label(for="password") Password:
+        input#password(type="password" name="password" required placeholder="Enter your password")
+
+        // ✅ Submit Button
+        button(type="submit") Register
+
+      p Already have an account? 
+        a(href="/login") Login here

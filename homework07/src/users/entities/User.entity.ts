@@ -5,8 +5,8 @@ import {
   OneToMany,
   Index,
 } from 'typeorm';
-import { Post } from '../../posts/entities/Posts';
-import { Comment } from '../../comments/entities/Comments';
+import { Post } from '../../posts/entities/Posts.entity';
+import { Comment } from '../../comments/entities/Comments.entity';
 
 @Entity('users')
 export class User {
